@@ -1,0 +1,11 @@
+{
+  "domain": "octoenergy_jp",
+  "name": "Octo Energy JP",
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "loggers": [
+    "custom_components.octoenergy_jp"
+  ],
+  "requirements": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Octo Energy JP",
+        "description": "Connect to Octopus Energy Japan and sync delayed half-hour electricity usage.",
+        "data": {
+          "email": "Email",
+          "password": "Password",
+          "api_url": "API URL",
+          "scan_interval_minutes": "Polling interval (minutes)",
+          "sync_days": "Initial sync days"
+        }
+      }
+    },
+    "error": {
+      "auth": "Failed to authenticate. Check email/password/API URL."
+    },
+    "abort": {
+      "already_configured": "This account is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Octo Energy JP options",
+        "data": {
+          "api_url": "API URL",
+          "scan_interval_minutes": "Polling interval (minutes)",
+          "sync_days": "Initial sync days"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "latest_half_hour_usage": {
+        "name": "Latest half-hour usage"
+      },
+      "today_total_usage": {
+        "name": "Today total usage"
+      },
+      "latest_data_timestamp": {
+        "name": "Latest data timestamp"
+      }
+    }
+  }
+}
