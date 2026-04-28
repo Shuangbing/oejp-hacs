@@ -66,7 +66,6 @@ class OctoEnergyJpCoordinator(DataUpdateCoordinator[OctoEnergyJpData]):
         self.hass = hass
         self.client = client
         self.config_entry = config_entry
-        self._token: str | None = None
         self._account_number: str | None = None
         self._jst = ZoneInfo(JST_TIMEZONE)
         self._store: Store[dict[str, str]] = Store(
@@ -106,10 +105,10 @@ class OctoEnergyJpCoordinator(DataUpdateCoordinator[OctoEnergyJpData]):
         password = self.config_entry.data[CONF_PASSWORD]
 
         try:
-            if self._token is None:
-                self._token = await self.client.get_token(email, password)
+            # JWT expires quickly on OEJP side; fetch a fresh token every poll.
+            token = await self.client.get_token(email, password)
             if self._account_number is None:
-                self._account_number = await self.client.get_account_number(self._token)
+                self._account_number = await self.client.get_account_number(token)
         except OctoEnergyJpAuthError as err:
             raise ConfigEntryAuthFailed("Authentication with Octo Energy JP failed") from err
         except OctoEnergyJpApiError as err:
@@ -135,12 +134,11 @@ class OctoEnergyJpCoordinator(DataUpdateCoordinator[OctoEnergyJpData]):
         try:
             readings = await self.client.get_hh_readings(
                 account_number=self._account_number,
-                token=self._token,
+                token=token,
                 start_at=range_start,
                 end_at=range_end,
             )
         except OctoEnergyJpAuthError:
-            self._token = None
             raise ConfigEntryAuthFailed("Authentication expired; please reauthenticate")
         except OctoEnergyJpApiError as err:
             raise UpdateFailed(f"Failed to fetch half-hour readings: {err}") from err
